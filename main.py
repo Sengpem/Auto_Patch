@@ -26,20 +26,6 @@ def close():
     root.destroy()
 
 
-menubar = tkinter.Menu(root)
-menu = tkinter.Menu(menubar, tearoff=0)
-menu.add_command(label="Exit", command=close)
-menubar.add_cascade(label="Option", menu=menu)
-root.config(menu=menubar)
-
-treeview = tkinter.ttk.Treeview(root, columns=["one"], displaycolumns=["one"], height=game.max_row - 2)
-treeview.pack()
-treeview.column("#0", width=180)
-treeview.heading("#0", text="게임명")
-treeview.column("#1", width=100)
-treeview.heading("#1", text="패치날짜")
-
-
 def load():
     for column in range(3, game.max_row + 1):
         if game.cell(column, pwd).value is None:
@@ -67,13 +53,27 @@ def update():
         tkinter.messagebox.showinfo("메시지 상자", "넥슨 홈페이지에서 시도하세요!")
 
 
+treeview = tkinter.ttk.Treeview(root, columns=["one"], displaycolumns=["one"], height=game.max_row - 2)
+treeview.pack()
+treeview.column("#0", width=180)
+treeview.heading("#0", text="게임명")
+treeview.column("#1", width=100)
+treeview.heading("#1", text="패치날짜")
+treeview.bind("<Double-1>", OnDoubleClick)
+
 for i in range(3, game.max_row + 1):
     treeview.insert('', 'end', text=game.cell(i, name).value, values='', iid=str(i))
-load()
+
+menubar = tkinter.Menu(root)
+menu = tkinter.Menu(menubar, tearoff=0)
+menu.add_command(label="Exit", command=close)
+menubar.add_cascade(label="Option", menu=menu)
+root.config(menu=menubar)
 
 Reload = tkinter.Button(root, overrelief="solid", command=load, repeatdelay=1000, repeatinterval=100, text="Reload")
 Update = tkinter.Button(root, overrelief="solid", command=update, repeatdelay=1000, repeatinterval=100, text="Update")
-treeview.bind("<Double-1>", OnDoubleClick)
 Reload.pack(side="left", expand="yes", fill="x")
 Update.pack(side="right", expand="yes", fill="x")
+
+load()
 root.mainloop()
