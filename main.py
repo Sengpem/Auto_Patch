@@ -2,6 +2,8 @@ import openpyxl
 import os
 import time
 import tkinter.ttk
+import tkinter.filedialog
+import tkinter.messagebox
 import webbrowser
 
 root = tkinter.Tk()
@@ -26,7 +28,6 @@ def close():
 
 menubar = tkinter.Menu(root)
 menu = tkinter.Menu(menubar, tearoff=0)
-# menu_1.add_command(label="Add", command=add)
 menu.add_command(label="Exit", command=close)
 menubar.add_cascade(label="Option", menu=menu)
 root.config(menu=menubar)
@@ -46,21 +47,33 @@ def load():
         filestat = os.stat(game.cell(column, pwd).value)
         time_v = time.strftime('%Y/%m/%d', time.localtime(filestat.st_mtime))
         treeview.item(str(column), text=game.cell(column, name).value, values=time_v)
-        treeview.bind("<Double-1>", OnDoubleClick)
         game.cell(column, day).value = time_v  # 수정날짜 엑셀에 기록
     excel.save(filename='게임 패치 목록.xlsx')  # 저장
 
 
 def OnDoubleClick(event):
     num = int(treeview.selection()[0])
-    webbrowser.open(patch.cell(num, 7).value)
+    filename = tkinter.filedialog.askdirectory()
+    game.cell(num, pwd).value = filename
+    excel.save(filename='settings.xlsx')
+    # webbrowser.open(patch.cell(num, 7).value)
+
+
+def update():
+    num = int(treeview.selection()[0])
+    if patch.cell(num, 5).value == "Yes":
+        webbrowser.open(patch.cell(num, 7).value)
+    else:
+        tkinter.messagebox.showinfo("메시지 상자", "넥슨 홈페이지에서 시도하세요!")
 
 
 for i in range(3, game.max_row + 1):
     treeview.insert('', 'end', text=game.cell(i, name).value, values='', iid=str(i))
 load()
 
-button = tkinter.Button(root, overrelief="solid", width=15, command=load, repeatdelay=1000, repeatinterval=100,
-                        text="Reload")
-button.pack()
+Reload = tkinter.Button(root, overrelief="solid", command=load, repeatdelay=1000, repeatinterval=100, text="Reload")
+Update = tkinter.Button(root, overrelief="solid", command=update, repeatdelay=1000, repeatinterval=100, text="Update")
+treeview.bind("<Double-1>", OnDoubleClick)
+Reload.pack(side="left", expand="yes", fill="x")
+Update.pack(side="right", expand="yes", fill="x")
 root.mainloop()
