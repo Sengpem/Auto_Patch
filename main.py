@@ -54,9 +54,9 @@ def load():
 def OnDoubleClick(event):
     num = int(treeview.selection()[0])
     filename = tkinter.filedialog.askdirectory()
-    game.cell(num, pwd).value = filename
-    excel.save(filename='settings.xlsx')
-    # webbrowser.open(patch.cell(num, 7).value)
+    if filename:
+        game.cell(num, pwd).value = filename
+        excel.save(filename='settings.xlsx')
 
 
 def update():
