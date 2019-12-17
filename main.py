@@ -48,7 +48,7 @@ def OnDoubleClick(event):
 def update():
     num = int(treeview.selection()[0])
     if patch.cell(num, 5).value == "Yes":
-        webbrowser.open(patch.cell(num, 7).value)
+        webbrowser.open(patch.cell(num, 6).value)
     else:
         tkinter.messagebox.showinfo("메시지 상자", "넥슨 홈페이지에서 시도하세요!")
 
